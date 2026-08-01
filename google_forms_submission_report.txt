@@ -1,0 +1,107 @@
+Relatório de Integração: Submissão em segundo plano ao Google Forms
+
+Projeto: Atom C.U
+Arquivo principal: index.html
+
+Objetivo
+--------
+Implementar um fluxo na página de checkout onde o cliente preenche um formulário na própria página, e esses dados são enviados automaticamente a um Google Forms em segundo plano enquanto o usuário é direcionado ao checkout.
+
+Contexto
+--------
+O formulário do Google foi fornecido pelo cliente como:
+https://docs.google.com/forms/d/e/1FAIpQLSeGKGTj2Z02yf7lkwoK2xFuWWrSDSZOd8cOMyr2oDMu8FbUdQ/viewform?usp=publish-editor
+
+Como funciona
+-------------
+1. O cliente clica em "Assinar" para um plano.
+2. O modal de registro é exibido com campos:
+   - Nome completo
+   - Email
+   - Telefone / WhatsApp
+3. Ao enviar o formulário:
+   - O registro é salvo em localStorage no navegador.
+   - Um formulário oculto do Google Forms é preenchido.
+   - Esse formulário oculto é submetido para o endpoint do Google Forms.
+   - O usuário é redirecionado para a URL de checkout em nova aba.
+
+Arquivos alterados
+------------------
+- index.html
+  - Adicionado modal de pré-checkout.
+  - Adicionado iframe oculto com name="googleFormTarget".
+  - Adicionado form oculto com id="googleForm" apontando para o endpoint /formResponse do Google Forms.
+  - Adicionada função submitToGoogleForm(record) para preencher e enviar o form oculto.
+
+Mapeamento de campos do Google Forms
+------------------------------------
+A análise do Google Form revelou os seguintes campos necessários:
+- entry.1056240402 -> Nome completo
+- entry.821257978 -> Email
+- entry.757689830 -> numero Telefone/WhatsApp
+
+Campos ocultos necessários para a submissão
+------------------------------------------
+O Google Forms também precisa de campos ocultos adicionais para a submissão correta:
+- fvv = 1
+- partialResponse = [null,null,"7592881815037738707"]
+- pageHistory = 0
+- fbzx = 7592881815037738707
+- submissionTimestamp = -1
+
+Fluxo implementado em JavaScript
+--------------------------------
+Funções chave:
+- showCheckoutForm(plan, checkoutUrl)
+  - Exibe o modal e define o plano/URL de checkout.
+- submitClientForm(event)
+  - Valida campos do formulário.
+  - Salva o cliente em localStorage.
+  - Chama submitToGoogleForm(record).
+  - Abre o checkout em nova aba.
+- submitToGoogleForm(record)
+  - Limpa o form oculto do Google.
+  - Cria campos hidden com os dados mapeados.
+  - Submete o form para o Google Forms em um iframe invisível.
+
+Detalhes do form oculto
+-----------------------
+O form oculto está definido desta forma:
+<form id="googleForm" action="https://docs.google.com/forms/d/e/1FAIpQLSeGKGTj2Z02yf7lkwoK2xFuWWrSDSZOd8cOMyr2oDMu8FbUdQ/formResponse" method="POST" target="googleFormTarget" style="display:none"></form>
+
+e o iframe destino:
+<iframe name="googleFormTarget" style="display:none"></iframe>
+
+Por que isso funciona
+---------------------
+- O Google Forms aceita submissão via POST no endpoint /formResponse.
+- Os campos visíveis do formulário são enviados como parâmetros entry.xxx.
+- O iframe oculta o processo, mantendo o usuário na página principal.
+
+Limitações e observações
+-------------------------
+- O fluxo depende do endpoint público do Google Forms.
+- Se o Google Forms mudar a estrutura dos campos entry.xxx, será necessário atualizar o mapeamento.
+- O envio em segundo plano funciona melhor em navegadores que permitem submissão de formulários em iframe.
+- Não há confirmação de sucesso do Google Forms no código atual; apenas a submissão é disparada.
+- Os dados são mantidos localmente no navegador via localStorage, não há servidor back-end.
+
+Como replicar
+-------------
+1. Copie o modal de pré-checkout do index.html.
+2. Adicione um iframe oculto e um formulário oculto apontando para o endpoint /formResponse do Google.
+3. Descubra os entry.xxx corretos inspecionando o Google Form ou usando um navegador para preencher e ler FormData.
+4. Crie a função submitToGoogleForm(record) para criar campos hidden e submeter o form.
+5. Chame essa função no submit do formulário principal antes de redirecionar para o checkout.
+
+Teste manual
+-------------
+1. Abra a página localmente ou online.
+2. Clique em um botão de plano.
+3. Preencha o modal e envie.
+4. Verifique se o checkout abre em nova aba.
+5. No Google Forms, verifique se um novo registro aparece (ou valide com o formulário original).
+
+Anotações finais
+----------------
+Este procedimento permite capturar dados no front-end e repostá-los ao Google Forms sem expor o formulário ao usuário. Para revisão futura, o arquivo acima pode ser usado como referência e adaptado caso o Google Forms mude sua estrutura.
