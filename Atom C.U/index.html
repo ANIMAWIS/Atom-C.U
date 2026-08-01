@@ -1,0 +1,416 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Atom C.U — Reestriming</title>
+    <meta name="description" content="Assista seus conteúdos favoritos sem limites — planos com HD/4K, múltiplos dispositivos, suporte 24h e sem fidelidade.">
+    <link rel="icon" href="assets/AtomC.U.png" sizes="192x192">
+    <style>
+        :root{
+            --blue:#0b66ff;
+            --dark-blue:#052a66;
+            --silver:#cfd6df;
+            --orange:#ff7a18;
+            --bg:#0f1724;
+            --card:#0b1220;
+            --glass: rgba(255,255,255,0.04);
+            --radius:12px;
+            color-scheme: dark light;
+        }
+        *{box-sizing:border-box}
+        body{font-family:Inter, ui-sans-serif, system-ui, -apple-system, "Segoe UI", Roboto, "Helvetica Neue", Arial; margin:0; background:linear-gradient(180deg,var(--bg),#071022); color:#e6eef8; -webkit-font-smoothing:antialiased}
+        .container{max-width:1120px;margin:0 auto;padding:28px}
+
+        /* Header / Hero */
+        header{display:flex;align-items:center;justify-content:space-between;padding:14px 0}
+        .logo{display:flex;gap:12px;align-items:center;font-weight:700}
+        .logo-img{width:76px;height:76px;border-radius:14px;display:block;object-fit:cover;box-shadow:0 4px 18px rgba(0,0,0,0.25);animation:logoFloat 6s ease-in-out infinite alternate;}
+        .cta{display:flex;gap:10px}
+        .btn{padding:10px 18px;border-radius:10px;border:0;cursor:pointer;font-weight:600}
+        .btn-primary{background:var(--orange);color:#08101a}
+        .btn-ghost{background:transparent;border:1px solid rgba(255,255,255,0.06);color:var(--silver)}
+
+        .hero{display:grid;grid-template-columns:1fr;gap:22px;align-items:center;padding:36px 0}
+        .hero-inner{background:linear-gradient(180deg, rgba(255,255,255,0.02), transparent);padding:28px;border-radius:16px}
+        .hero h1{font-size:clamp(28px,4vw,44px);margin:0 0 10px}
+        .hero p{margin:0 0 18px;color:var(--silver);max-width:70%}
+        .large-logo-wrapper{display:flex;justify-content:center;margin:22px 0;}
+        .large-logo{width:min(500px,90vw);max-width:500px;height:auto;animation:logoFloat 6s ease-in-out infinite alternate;box-shadow:0 18px 45px rgba(0,0,0,0.25);border-radius:24px;}
+
+        .hidden{display:none !important}
+        .modal-overlay{position:fixed;inset:0;background:rgba(5,11,23,.78);backdrop-filter:blur(8px);display:flex;align-items:center;justify-content:center;padding:18px;z-index:30}
+        .modal{width:min(520px,100%);background:rgba(11,18,32,.98);border:1px solid rgba(255,255,255,0.08);border-radius:22px;padding:28px;box-shadow:0 20px 50px rgba(0,0,0,0.4);position:relative}
+        .modal h2{margin-top:0;font-size:1.5rem}
+        .modal p{color:var(--silver);margin:10px 0 18px}
+        .modal input{width:100%;padding:12px 14px;margin:10px 0 14px;border-radius:14px;border:1px solid rgba(255,255,255,0.12);background:rgba(255,255,255,0.04);color:#eef2ff}
+        .modal .form-meta{margin:10px 0 18px;color:var(--orange);font-weight:700}
+        .modal .close-btn{position:absolute;top:16px;right:16px;border:none;background:transparent;color:var(--silver);font-size:22px;cursor:pointer}
+        .modal .form-message{margin-top:14px;color:#f6c6c1;font-size:0.95rem;line-height:1.4}
+        .master-result{margin-top:16px;max-height:360px;overflow:auto;background:rgba(255,255,255,0.03);border-radius:14px;padding:14px}
+        .master-result table{width:100%;border-collapse:collapse;font-size:0.93rem}
+        .master-result th,.master-result td{border-bottom:1px solid rgba(255,255,255,0.08);padding:8px 6px;text-align:left}
+
+        /* Plans */
+        .plans{display:grid;grid-template-columns:repeat(auto-fit,minmax(220px,1fr));gap:16px;margin-top:18px}
+        .plan{background:var(--card);padding:18px;border-radius:14px;border:1px solid rgba(255,255,255,0.03)}
+        .plan .price{font-size:22px;font-weight:700;color:var(--orange)}
+        .plan ul{list-style:none;padding:0;margin:10px 0 16px;color:var(--silver)}
+
+        /* Testimonials */
+        .testimonials{margin-top:26px;display:grid;grid-template-columns:1fr;gap:12px}
+        .testimonial{background:var(--glass);padding:14px;border-radius:12px}
+        .testimonial p{margin:0;color:var(--silver)}
+
+        /* FAQ */
+        .faq{margin-top:24px}
+        .faq-item{background:linear-gradient(180deg, rgba(255,255,255,0.02), transparent);padding:12px;border-radius:10px;margin-bottom:8px}
+        .faq-q{display:flex;justify-content:space-between;cursor:pointer}
+        .faq-a{max-height:0;overflow:hidden;transition:max-height .28s ease;padding-top:0}
+        .faq-a.open{padding-top:8px}
+
+        footer{margin-top:36px;padding:20px 0;border-top:1px solid rgba(255,255,255,0.03);color:var(--silver)}
+
+        /* Responsive layout */
+        @media(min-width:860px){
+            .hero{grid-template-columns:1fr 420px}
+            .hero p{max-width:100%}
+        }
+
+        /* subtle animations */
+        .fade-in{animation:fadeIn .6s ease both}
+        @keyframes fadeIn{from{opacity:0;transform:translateY(6px)}to{opacity:1;transform:none}}
+        @keyframes logoFloat{from{transform:translateY(0) scale(1)}to{transform:translateY(-6px) scale(1.02)}}
+    </style>
+</head>
+<body>
+    <div class="container">
+        <header>
+            <div class="logo">
+                <img src="assets/AtomC.U.png" alt="Atom C.U" class="logo-img">
+                <div>
+                    <div style="font-size:14px">Atom C.U</div>
+                    <div style="font-size:12px;color:var(--silver)">Reestriming Inteligente</div>
+                </div>
+            </div>
+            <div class="cta">
+                <button class="btn btn-ghost" onclick="scrollToPlans()">Planos</button>
+                <button class="btn btn-primary" onclick="showCheckoutForm('Atom C.U Mensal', 'https://pag.ae/821DQMiw9')">Assinar Agora</button>
+            </div>
+        </header>
+
+        <main>
+            <section class="hero">
+                <div class="hero-inner fade-in">
+                    <div class="large-logo-wrapper" style="margin-bottom:20px;">
+                        <img class="large-logo" src="assets/AtomC.U.png" alt="Atom C.U">
+                    </div>
+                    <h1>Assista seus conteúdos favoritos sem limites!</h1>
+                    <p>Atom C.U é um sistema de reestriming moderno com suporte HD/4K, compatibilidade com vários dispositivos, suporte 24 horas e sem fidelidade. Escolha um plano e ative seu acesso em minutos.</p>
+                    <div style="display:flex;gap:12px;align-items:center">
+                        <button class="btn btn-primary" onclick="showCheckoutForm('Atom C.U Mensal', 'https://pag.ae/821DQMiw9')">Assinar Agora</button>
+                        <a class="btn btn-ghost" href="https://wa.me/5511900000000?text=Ol%C3%A1%2C%20quero%20assinar%20um%20plano%20do%20Atom%20C.U" target="_blank" rel="noopener noreferrer">Fale no WhatsApp</a>
+                    </div>
+                </div>
+
+                <aside class="hero-inner fade-in">
+                    <img src="assets/AtomC.U.png" alt="Atom C.U" style="width:64px;height:64px;border-radius:12px;float:right;margin-left:10px">
+                    <h3 style="margin:0 0 10px">Por que escolher Atom C.U?</h3>
+                    <ul style="margin:0;padding-left:18px;color:var(--silver)">
+                        <li>Streaming em HD e 4K</li>
+                        <li>Suporte 24h e sem fidelidade</li>
+                        <li>Compatível com Smart TVs, celulares e PCs</li>
+                    </ul>
+                </aside>
+            </section>
+
+            <section id="plans" style="margin-top:18px">
+                <h2 style="margin:0 0 12px">Planos</h2>
+                <div class="plans">
+                    <div class="plan fade-in">
+                        <h4>Atom C.U Mensal</h4>
+                        <div class="price">R$ 25,00 / mês</div>
+                        <div style="color:var(--silver);font-size:13px;margin-top:6px">Recorrente - Mensal</div>
+                        <p style="color:var(--silver);margin:10px 0 12px">Ideal para quem quer testar o serviço e aproveitar o melhor do reestriming sem compromisso.</p>
+                        <button class="btn btn-primary" onclick="showCheckoutForm('Atom C.U Mensal', 'https://pag.ae/821DQMiw9')">Assinar</button>
+                    </div>
+                    <div class="plan fade-in">
+                        <h4>Atom C.U Trimestral</h4>
+                        <div class="price">R$ 72,50 / 3 meses</div>
+                        <div style="color:var(--silver);font-size:13px;margin-top:6px">Recorrente - Trimestral</div>
+                        <p style="color:var(--silver);margin:10px 0 12px">Economia garantida! Pague menos e tenha acesso contínuo por três meses.</p>
+                        <button class="btn btn-primary" onclick="showCheckoutForm('Atom C.U Trimestral', 'https://pag.ae/821DPN34u')">Assinar</button>
+                    </div>
+                    <div class="plan fade-in">
+                        <h4>Atom C.U Anual</h4>
+                        <div class="price">R$ 240,00 / ano</div>
+                        <div style="color:var(--silver);font-size:13px;margin-top:6px">Recorrente - Anual</div>
+                        <p style="color:var(--silver);margin:10px 0 12px">O melhor custo-benefício: um ano inteiro de entretenimento sem preocupações.</p>
+                        <button class="btn btn-primary" onclick="showCheckoutForm('Atom C.U Anual', 'https://pag.ae/821DRKM4m')">Assinar</button>
+                    </div>
+                </div>
+            </section>
+
+            <section style="margin-top:20px">
+                <h2 style="margin:0 0 12px">Depoimentos</h2>
+                <div class="testimonials" id="testimonials">
+                    <div class="testimonial">
+                        <p>"A qualidade 4K é incrível — tudo funciona sem travar." — Lucas, SP</p>
+                    </div>
+                    <div class="testimonial" style="display:none">
+                        <p>"Atendimento 24 horas quando precisei. Recomendo!" — Marina, RJ</p>
+                    </div>
+                    <div class="testimonial" style="display:none">
+                        <p>"Configuração rápida e compatível com minha Smart TV." — Ricardo, MG</p>
+                    </div>
+                </div>
+            </section>
+
+            <section class="faq" style="margin-top:22px">
+                <h2 style="margin:0 0 12px">FAQ</h2>
+                <div class="faq-item">
+                    <div class="faq-q" onclick="toggleFaq(this)">
+                        <strong>Como cancelo minha assinatura?</strong>
+                        <span>+</span>
+                    </div>
+                    <div class="faq-a">Você pode cancelar a qualquer momento pelo painel de cliente; o serviço seguirá até o fim do período já pago.</div>
+                </div>
+                <div class="faq-item">
+                    <div class="faq-q" onclick="toggleFaq(this)">
+                        <strong>Quais dispositivos são compatíveis?</strong>
+                        <span>+</span>
+                    </div>
+                    <div class="faq-a">Smart TVs, Android/iOS, navegadores em PC e dispositivos com suporte a apps de streaming.</div>
+                </div>
+                <div class="faq-item">
+                    <div class="faq-q" onclick="toggleFaq(this)">
+                        <strong>Há fidelidade ou cobrança escondida?</strong>
+                        <span>+</span>
+                    </div>
+                    <div class="faq-a">Não — não trabalhamos com fidelidade. Planos são recorrentes mensais com cancelamento a qualquer momento.</div>
+                </div>
+            </section>
+
+            <div id="checkoutModal" class="modal-overlay hidden" onclick="if(event.target===this) closeCheckoutModal()">
+                <div class="modal">
+                    <button class="close-btn" type="button" onclick="closeCheckoutModal()">×</button>
+                    <h2>Registro antes do checkout</h2>
+                    <p>Preencha seus dados para que possamos registrar sua solicitação e direcioná-lo ao checkout correto.</p>
+                    <form id="checkoutForm" onsubmit="submitClientForm(event)">
+                        <input type="text" name="nome" placeholder="Nome completo" required>
+                        <input type="email" name="email" placeholder="Email" required>
+                        <input type="tel" name="telefone" placeholder="Telefone / WhatsApp" required>
+                        <div class="form-meta" id="selectedPlan">Plano selecionado: —</div>
+                        <input type="hidden" name="plano" id="selectedPlanInput">
+                        <input type="hidden" name="checkout_url" id="checkoutUrlInput">
+                        <button class="btn btn-primary" type="submit">Ir para Checkout</button>
+                    </form>
+                    <div id="checkoutMessage" class="form-message"></div>
+                </div>
+            </div>
+
+            <div id="masterModal" class="modal-overlay hidden" onclick="if(event.target===this) closeMasterModal()">
+                <div class="modal">
+                    <button class="close-btn" type="button" onclick="closeMasterModal()">×</button>
+                    <h2>Área Master</h2>
+                    <p>Informe a senha para visualizar os clientes registrados.</p>
+                    <form id="masterForm" onsubmit="requestMasterData(event)">
+                        <input type="password" name="password" placeholder="Senha Master" required>
+                        <button class="btn btn-primary" type="submit">Entrar</button>
+                    </form>
+                    <div id="masterResult" class="master-result"></div>
+                    <button class="btn btn-ghost" id="downloadJsonBtn" type="button" onclick="downloadClientsJson()" style="display:none;margin-top:12px">Baixar JSON</button>
+                </div>
+            </div>
+
+            <iframe name="googleFormTarget" style="display:none"></iframe>
+            <form id="googleForm" action="https://docs.google.com/forms/d/e/1FAIpQLSeGKGTj2Z02yf7lkwoK2xFuWWrSDSZOd8cOMyr2oDMu8FbUdQ/formResponse" method="POST" target="googleFormTarget" style="display:none"></form>
+
+            <footer>
+                <div style="display:flex;justify-content:space-between;flex-wrap:wrap;gap:12px;align-items:center">
+                    <div>
+                        <div style="display:flex;align-items:center;gap:8px">
+                            <img src="assets/AtomC.U.png" alt="Atom C.U" style="width:48px;height:48px;border-radius:8px">
+                            <div style="font-weight:700">Contato</div>
+                        </div>
+                        <div style="color:var(--silver)">WhatsApp: <a href="#" onclick="openWhatsApp()" style="color:var(--orange);text-decoration:none">(11) 90000-0000</a></div>
+                        <div style="color:var(--silver)">E-mail: <a href="mailto:contato@atomcu.com" style="color:var(--orange);text-decoration:none">contato@atomcu.com</a></div>
+                    </div>
+                    <div style="text-align:right;color:var(--silver)">
+                        <div>Redes sociais</div>
+                        <div style="display:flex;gap:8px;justify-content:flex-end;margin-top:6px">
+                            <a href="#" style="color:var(--silver);">Instagram</a>
+                            <a href="#" style="color:var(--silver);">Facebook</a>
+                            <a href="#" style="color:var(--silver);">Twitter</a>
+                        </div>
+                    </div>
+                </div>
+                <div style="margin-top:14px;color:var(--silver);font-size:13px">© <span id="year"></span> Atom C.U — <a href="#" style="color:var(--silver)">Termos e Condições</a> · <button class="btn btn-ghost" style="padding:8px 12px;font-size:0.93rem" onclick="openMasterArea()">Área Master</button></div>
+            </footer>
+        </main>
+    </div>
+
+    <script>
+        document.getElementById('year').textContent = new Date().getFullYear();
+        if(!localStorage.getItem('atomcu_clients')){
+            localStorage.setItem('atomcu_clients', '[]');
+        }
+
+        function scrollToPlans(){
+            document.getElementById('plans').scrollIntoView({behavior:'smooth'});
+        }
+
+        function openWhatsApp(){
+            // phone and message placeholders — replace with real number in production
+            var phone = '5511900000000';
+            var text = encodeURIComponent('Olá, quero assinar um plano do Atom C.U');
+            window.open('https://wa.me/' + phone + '?text=' + text, '_blank');
+        }
+
+        function showCheckoutForm(plan, checkoutUrl){
+            document.getElementById('selectedPlan').textContent = 'Plano selecionado: ' + plan;
+            document.getElementById('selectedPlanInput').value = plan;
+            document.getElementById('checkoutUrlInput').value = checkoutUrl;
+            document.getElementById('checkoutMessage').textContent = '';
+            document.getElementById('checkoutModal').classList.remove('hidden');
+        }
+
+        function closeCheckoutModal(){
+            document.getElementById('checkoutModal').classList.add('hidden');
+            document.getElementById('checkoutForm').reset();
+        }
+
+        function submitClientForm(event){
+            event.preventDefault();
+            var form = event.target;
+            var formData = new FormData(form);
+            var record = {
+                nome: formData.get('nome').trim(),
+                email: formData.get('email').trim(),
+                telefone: formData.get('telefone').trim(),
+                plano: formData.get('plano'),
+                checkout_url: formData.get('checkout_url')
+            };
+            var messageEl = document.getElementById('checkoutMessage');
+            if(!record.nome || !record.email || !record.telefone){
+                messageEl.textContent = 'Preencha todos os campos antes de continuar.';
+                return;
+            }
+            messageEl.textContent = 'Salvando seus dados localmente...';
+            var clients = JSON.parse(localStorage.getItem('atomcu_clients') || '[]');
+            clients.push(record);
+            localStorage.setItem('atomcu_clients', JSON.stringify(clients));
+
+            messageEl.textContent = 'Enviando dados ao Google Forms em segundo plano...';
+            submitToGoogleForm(record);
+
+            window.open(record.checkout_url, '_blank');
+            setTimeout(closeCheckoutModal, 800);
+        }
+
+        function submitToGoogleForm(record){
+            var googleForm = document.getElementById('googleForm');
+            googleForm.innerHTML = '';
+
+            var fields = {
+                'entry.1056240402': record.nome,
+                'entry.821257978': record.email,
+                'entry.757689830': record.telefone,
+                'fvv': '1',
+                'partialResponse': '[null,null,"7592881815037738707"]',
+                'pageHistory': '0',
+                'fbzx': '7592881815037738707',
+                'submissionTimestamp': '-1'
+            };
+
+            for(var key in fields){
+                var input = document.createElement('input');
+                input.type = 'hidden';
+                input.name = key;
+                input.value = fields[key];
+                googleForm.appendChild(input);
+            }
+
+            googleForm.submit();
+        }
+
+        function openMasterArea(){
+            document.getElementById('masterResult').innerHTML = '';
+            document.getElementById('masterForm').reset();
+            document.getElementById('masterModal').classList.remove('hidden');
+        }
+
+        function closeMasterModal(){
+            document.getElementById('masterModal').classList.add('hidden');
+            document.getElementById('masterResult').innerHTML = '';
+        }
+
+        function requestMasterData(event){
+            event.preventDefault();
+            var password = new FormData(event.target).get('password');
+            var resultEl = document.getElementById('masterResult');
+            var downloadBtn = document.getElementById('downloadJsonBtn');
+            if(password !== 'Batatadoce'){
+                resultEl.textContent = 'Senha inválida. Tente novamente.';
+                downloadBtn.style.display = 'none';
+                return;
+            }
+            var clients = JSON.parse(localStorage.getItem('atomcu_clients') || '[]');
+            if(!clients.length){
+                resultEl.textContent = 'Nenhum cliente registrado ainda.';
+                downloadBtn.style.display = 'none';
+                return;
+            }
+            resultEl.innerHTML = '<table><thead><tr><th>Nome</th><th>Email</th><th>Telefone</th><th>Plano</th></tr></thead><tbody>' +
+                clients.map(function(item){
+                    return '<tr><td>' + escapeHtml(item.nome) + '</td><td>' + escapeHtml(item.email) + '</td><td>' + escapeHtml(item.telefone) + '</td><td>' + escapeHtml(item.plano) + '</td></tr>';
+                }).join('') + '</tbody></table>';
+            downloadBtn.style.display = 'inline-flex';
+        }
+
+        function downloadClientsJson(){
+            var clients = JSON.parse(localStorage.getItem('atomcu_clients') || '[]');
+            var dataStr = 'data:text/json;charset=utf-8,' + encodeURIComponent(JSON.stringify(clients, null, 2));
+            var a = document.createElement('a');
+            a.href = dataStr;
+            a.download = 'atomcu_clients.json';
+            document.body.appendChild(a);
+            a.click();
+            document.body.removeChild(a);
+        }
+
+        function escapeHtml(text){
+            var el = document.createElement('div');
+            el.textContent = text;
+            return el.innerHTML;
+        }
+
+        // FAQ toggle
+        function toggleFaq(el){
+            var a = el.nextElementSibling;
+            var open = a.style.maxHeight && a.style.maxHeight !== '0px';
+            if(open){
+                a.style.maxHeight = '0';
+                a.classList.remove('open');
+                el.querySelector('span').textContent = '+';
+            } else {
+                a.style.maxHeight = a.scrollHeight + 'px';
+                a.classList.add('open');
+                el.querySelector('span').textContent = '-';
+            }
+        }
+
+        // Testimonials rotate
+        (function rotateTestimonials(){
+            var idx = 0;
+            var items = document.querySelectorAll('#testimonials .testimonial');
+            if(!items.length) return;
+            setInterval(function(){
+                items[idx].style.display = 'none';
+                idx = (idx + 1) % items.length;
+                items[idx].style.display = 'block';
+            },4000);
+        })();
+    </script>
+</body>
+</html>
