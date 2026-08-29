@@ -1,0 +1,396 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Atom C.U — Área Master</title>
+    <style>
+        :root {
+            --bg: #07111f;
+            --panel: #0f1728;
+            --panel-2: #121d31;
+            --text: #eef4ff;
+            --muted: #9fb0c9;
+            --accent: #ff7a18;
+            --border: rgba(255,255,255,0.10);
+            --success: #2ecc71;
+            --danger: #ff6b6b;
+        }
+
+        * { box-sizing: border-box; }
+        body {
+            margin: 0;
+            font-family: Inter, ui-sans-serif, system-ui, -apple-system, "Segoe UI", Roboto, Arial;
+            background: linear-gradient(180deg, var(--bg), #0b1426);
+            color: var(--text);
+            min-height: 100vh;
+        }
+
+        .wrap {
+            max-width: 1280px;
+            margin: 0 auto;
+            padding: 28px 18px 48px;
+        }
+
+        .topbar {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            gap: 12px;
+            margin-bottom: 20px;
+        }
+
+        .topbar h1 { margin: 0; font-size: 1.5rem; }
+        .topbar p { margin: 4px 0 0; color: var(--muted); }
+
+        .card {
+            background: rgba(255,255,255,0.04);
+            border: 1px solid var(--border);
+            border-radius: 16px;
+            padding: 18px;
+            box-shadow: 0 14px 40px rgba(0,0,0,0.18);
+        }
+
+        .status-row {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            flex-wrap: wrap;
+            gap: 12px;
+            margin-bottom: 12px;
+            color: var(--muted);
+            font-size: 0.95rem;
+        }
+
+        .pill {
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            padding: 8px 12px;
+            border-radius: 999px;
+            background: rgba(255,255,255,0.05);
+            border: 1px solid var(--border);
+        }
+
+        .pill .dot {
+            width: 8px;
+            height: 8px;
+            border-radius: 50%;
+            background: var(--accent);
+        }
+
+        .pill.live .dot { background: var(--success); }
+
+        .controls {
+            display: flex;
+            gap: 10px;
+            flex-wrap: wrap;
+            margin-bottom: 12px;
+        }
+
+        button, .btn-link {
+            border: 0;
+            border-radius: 10px;
+            padding: 10px 14px;
+            font-weight: 600;
+            cursor: pointer;
+            text-decoration: none;
+            color: var(--text);
+            background: var(--accent);
+        }
+
+        button.secondary, .btn-link.secondary {
+            background: rgba(255,255,255,0.06);
+            color: var(--text);
+            border: 1px solid var(--border);
+        }
+
+        .notice {
+            margin-bottom: 14px;
+            padding: 12px 14px;
+            border-radius: 12px;
+            background: rgba(255,255,255,0.04);
+            color: var(--muted);
+        }
+
+        .notice.error {
+            color: #ffd4d4;
+            background: rgba(255,107,107,0.12);
+            border: 1px solid rgba(255,107,107,0.2);
+        }
+
+        .table-wrap {
+            overflow: auto;
+            border-radius: 14px;
+            border: 1px solid var(--border);
+            background: var(--panel-2);
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            min-width: 720px;
+        }
+
+        th, td {
+            padding: 12px 14px;
+            text-align: left;
+            border-bottom: 1px solid rgba(255,255,255,0.06);
+            vertical-align: top;
+        }
+
+        th {
+            background: rgba(255,255,255,0.05);
+            color: #f4f8ff;
+            font-size: 0.92rem;
+            position: sticky;
+            top: 0;
+        }
+
+        tbody tr:hover {
+            background: rgba(255,255,255,0.03);
+        }
+
+        .muted { color: var(--muted); }
+
+        .hidden { display: none !important; }
+
+        .access-card {
+            max-width: 420px;
+            margin: 40px auto 0;
+            padding: 24px;
+        }
+
+        .access-card input {
+            width: 100%;
+            padding: 12px 14px;
+            border-radius: 10px;
+            border: 1px solid var(--border);
+            background: rgba(255,255,255,0.05);
+            color: var(--text);
+            margin-top: 10px;
+            margin-bottom: 12px;
+        }
+
+        @media (max-width: 720px) {
+            .topbar { flex-direction: column; align-items: flex-start; }
+            .status-row { align-items: flex-start; }
+        }
+    </style>
+</head>
+<body>
+    <div class="wrap">
+        <div id="accessView" class="card access-card">
+            <h2 style="margin-top:0">Área Master</h2>
+            <p class="muted">Informe a senha para visualizar os registros da planilha.</p>
+            <form id="accessForm">
+                <input id="passwordInput" type="password" placeholder="Senha Master" required>
+                <button type="submit">Entrar</button>
+            </form>
+            <div id="accessMessage" class="notice hidden"></div>
+        </div>
+
+        <div id="contentView" class="hidden">
+            <div class="topbar">
+                <div>
+                    <h1>Registros da planilha</h1>
+                    <p>Dados carregados diretamente da planilha compartilhada em tempo real.</p>
+                </div>
+                <a class="btn-link secondary" href="index.html">Voltar para a página inicial</a>
+            </div>
+
+            <div class="card">
+                <div class="status-row">
+                    <div class="pill live"><span class="dot"></span>Atualização automática</div>
+                    <div id="lastUpdated" class="muted">Aguardando carregamento...</div>
+                </div>
+                <div class="controls">
+                    <button id="refreshBtn" type="button">Atualizar agora</button>
+                    <button class="secondary" type="button" onclick="openSpreadsheet()">Abrir planilha</button>
+                </div>
+                <div id="infoMessage" class="notice">Carregando registros...</div>
+                <div class="table-wrap">
+                    <table>
+                        <thead>
+                            <tr>
+                                <th>Carimbo de data/hora</th>
+                                <th>Nome completo</th>
+                                <th>Email</th>
+                                <th>numero Telefone/WhatsApp</th>
+                            </tr>
+                        </thead>
+                        <tbody id="tableBody"></tbody>
+                    </table>
+                </div>
+
+                <div style="margin-top:18px">
+                    <h3 style="margin:0 0 10px">Painel Sou IPTV</h3>
+                    <div style="border:1px solid var(--border);border-radius:14px;overflow:hidden;background:#fff;min-height:700px">
+                        <iframe src="https://painel.souiptv.com/application/home" title="Painel Sou IPTV" style="width:100%;height:780px;border:0;display:block"></iframe>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        const SPREADSHEET_ID = '1Y-csC7UVj-7QdnABfICvB5Jdx198c0-Gm9e58QU7748';
+        const SPREADSHEET_URL = 'https://docs.google.com/spreadsheets/d/' + SPREADSHEET_ID + '/edit?usp=sharing';
+        const EXPORT_URL = 'https://docs.google.com/spreadsheets/d/' + SPREADSHEET_ID + '/export?format=csv&gid=0';
+        const ACCESS_PASSWORD = 'Batatadoce';
+        let rowsCache = [];
+
+        const accessView = document.getElementById('accessView');
+        const contentView = document.getElementById('contentView');
+        const accessForm = document.getElementById('accessForm');
+        const accessMessage = document.getElementById('accessMessage');
+        const infoMessage = document.getElementById('infoMessage');
+        const tableBody = document.getElementById('tableBody');
+        const lastUpdated = document.getElementById('lastUpdated');
+
+        accessForm.addEventListener('submit', function (event) {
+            event.preventDefault();
+            const password = document.getElementById('passwordInput').value.trim();
+            if (password !== ACCESS_PASSWORD) {
+                accessMessage.textContent = 'Senha inválida. Tente novamente.';
+                accessMessage.classList.remove('hidden');
+                accessMessage.classList.add('error');
+                return;
+            }
+            accessMessage.classList.add('hidden');
+            accessView.classList.add('hidden');
+            contentView.classList.remove('hidden');
+            loadData();
+        });
+
+        document.getElementById('refreshBtn').addEventListener('click', loadData);
+
+        function openSpreadsheet() {
+            window.open(SPREADSHEET_URL, '_blank');
+        }
+
+        async function loadData() {
+            infoMessage.textContent = 'Carregando registros da planilha...';
+            infoMessage.classList.remove('error');
+            try {
+                const response = await fetch(EXPORT_URL + '&t=' + Date.now(), { cache: 'no-store' });
+                if (!response.ok) {
+                    throw new Error('Não foi possível acessar a planilha compartilhada.');
+                }
+                const csvText = await response.text();
+                const parsedRows = parseCsv(csvText);
+                rowsCache = normalizeRows(parsedRows);
+                renderRows(rowsCache);
+                lastUpdated.textContent = 'Última atualização: ' + new Date().toLocaleString('pt-BR');
+                infoMessage.textContent = rowsCache.length ? 'Registros carregados com sucesso.' : 'Nenhum registro encontrado na planilha.';
+            } catch (error) {
+                console.error(error);
+                infoMessage.textContent = 'Não foi possível carregar os dados da planilha no momento. Verifique se o link está compartilhado e tente novamente.';
+                infoMessage.classList.add('error');
+            }
+        }
+
+        function normalizeRows(rows) {
+            if (!rows.length) return [];
+            const headers = rows[0].map(function (header) {
+                return String(header || '').trim().toLowerCase();
+            });
+            const dataRows = rows.slice(1).filter(function (row) {
+                return row.some(function (cell) {
+                    return String(cell || '').trim() !== '';
+                });
+            });
+
+            return dataRows.map(function (row) {
+                const item = {};
+                headers.forEach(function (header, index) {
+                    const value = row[index] || '';
+                    if (header.includes('carimbo') || header.includes('data') || header.includes('hora')) {
+                        item.created_at = value;
+                    } else if (header.includes('nome')) {
+                        item.nome = value;
+                    } else if (header.includes('email')) {
+                        item.email = value;
+                    } else if (header.includes('telefone') || header.includes('whatsapp')) {
+                        item.telefone = value;
+                    } else {
+                        item[header] = value;
+                    }
+                });
+                return {
+                    created_at: item.created_at || '',
+                    nome: item.nome || '',
+                    email: item.email || '',
+                    telefone: item.telefone || ''
+                };
+            });
+        }
+
+        function renderRows(rows) {
+            if (!rows.length) {
+                tableBody.innerHTML = '<tr><td colspan="4" class="muted">Nenhum registro encontrado.</td></tr>';
+                return;
+            }
+            tableBody.innerHTML = rows.map(function (item) {
+                return '<tr><td>' + escapeHtml(item.created_at) + '</td><td>' + escapeHtml(item.nome) + '</td><td>' + escapeHtml(item.email) + '</td><td>' + escapeHtml(item.telefone) + '</td></tr>';
+            }).join('');
+        }
+
+        function parseCsv(text) {
+            const rows = [];
+            let row = [];
+            let value = '';
+            let inQuotes = false;
+
+            for (let i = 0; i < text.length; i += 1) {
+                const char = text[i];
+                const next = text[i + 1];
+                if (char === '"') {
+                    if (inQuotes && next === '"') {
+                        value += '"';
+                        i += 1;
+                    } else {
+                        inQuotes = !inQuotes;
+                    }
+                } else if (char === ',' && !inQuotes) {
+                    row.push(value);
+                    value = '';
+                } else if ((char === '\n' || char === '\r') && !inQuotes) {
+                    if (char === '\r' && next === '\n') {
+                        i += 1;
+                    }
+                    row.push(value);
+                    if (row.some(function (cell) { return String(cell).trim() !== ''; })) {
+                        rows.push(row);
+                    }
+                    row = [];
+                    value = '';
+                } else {
+                    value += char;
+                }
+            }
+
+            if (value.length || row.length) {
+                row.push(value);
+                if (row.some(function (cell) { return String(cell).trim() !== ''; })) {
+                    rows.push(row);
+                }
+            }
+
+            return rows;
+        }
+
+        function escapeHtml(text) {
+            const div = document.createElement('div');
+            div.textContent = text;
+            return div.innerHTML;
+        }
+
+        setInterval(function () {
+            if (!contentView.classList.contains('hidden')) {
+                loadData();
+            }
+        }, 15000);
+    </script>
+</body>
+</html>

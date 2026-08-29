@@ -57,6 +57,34 @@
         .plan .price{font-size:22px;font-weight:700;color:var(--orange)}
         .plan ul{list-style:none;padding:0;margin:10px 0 16px;color:var(--silver)}
 
+        /* Streaming carousel */
+        .streaming-section{margin-top:26px;background:linear-gradient(180deg, rgba(255,255,255,0.015), rgba(255,255,255,0.04));border:1px solid rgba(255,255,255,0.06);border-radius:22px;padding:22px 18px;overflow:hidden}
+        .section-kicker{display:inline-flex;align-items:center;gap:8px;padding:7px 12px;border-radius:999px;background:rgba(11,102,255,0.12);border:1px solid rgba(117,153,255,0.4);color:#dfe9ff;font-size:12px;font-weight:700;letter-spacing:.08em;text-transform:uppercase}
+        .section-heading{display:flex;justify-content:space-between;align-items:end;gap:12px;margin:12px 0 18px;flex-wrap:wrap}
+        .section-heading h2{margin:0;font-size:clamp(20px,2vw,30px)}
+        .section-heading p{margin:0;color:var(--silver)}
+        .streaming-carousel{position:relative;overflow:hidden;padding:8px 0}
+        .streaming-carousel::before,.streaming-carousel::after{content:"";position:absolute;top:0;bottom:0;width:80px;z-index:2;pointer-events:none}
+        .streaming-carousel::before{left:0;background:linear-gradient(90deg, rgba(15,23,36,1), rgba(15,23,36,0))}
+        .streaming-carousel::after{right:0;background:linear-gradient(270deg, rgba(15,23,36,1), rgba(15,23,36,0))}
+        .stream-track{display:flex;width:max-content;gap:18px;animation:marquee 28s linear infinite}
+        .streaming-carousel:hover .stream-track{animation-play-state:paused}
+        .stream-group{display:flex;gap:18px;padding-right:18px}
+        .stream-item{position:relative;display:flex;align-items:center;gap:12px;min-width:210px;padding:14px 16px;border-radius:18px;background:linear-gradient(135deg, rgba(255,255,255,0.07), rgba(255,255,255,0.02));border:1px solid rgba(255,255,255,0.08);box-shadow:0 16px 32px rgba(0,0,0,0.18);animation:floatCard 4.2s ease-in-out infinite;transition:transform .25s ease, box-shadow .25s ease, border-color .25s ease}
+        .stream-item::before{content:"";position:absolute;inset:0;border-radius:inherit;background:linear-gradient(135deg, rgba(255,255,255,0.12), transparent 45%, rgba(148,163,184,0.08));opacity:0;transition:opacity .25s ease}
+        .stream-item:hover{transform:translateY(-5px) scale(1.01);border-color:rgba(255,255,255,0.18);box-shadow:0 22px 36px rgba(0,0,0,0.28),0 0 0 1px rgba(148,163,184,0.1)}
+        .stream-item:hover::before{opacity:1}
+        .stream-item:nth-child(2n){animation-delay:.4s}
+        .stream-item:nth-child(3n){animation-delay:.8s}
+        .logo-badge{width:42px;height:42px;border-radius:12px;display:grid;place-items:center;overflow:hidden;box-shadow:inset 0 1px 0 rgba(255,255,255,0.25), 0 10px 22px rgba(0,0,0,0.18);padding:6px;background:rgba(255,255,255,0.06);transition:transform .25s ease, box-shadow .25s ease}
+        .logo-badge img{display:block;width:100%;height:100%;object-fit:contain;filter:none}
+        .fallback-letter{display:inline-flex;align-items:center;justify-content:center;width:100%;height:100%;font-weight:900;color:#fff;font-size:1.15rem;letter-spacing:-0.07em;line-height:1}
+        .looke .logo-badge{background:linear-gradient(135deg,#ff8a00,#ff4d00)}
+        .premiere .logo-badge{background:linear-gradient(135deg,#00b7ff,#0067ff)}
+        .sporttv .logo-badge{background:linear-gradient(135deg,#f71141,#8b0d2a)}
+        .stream-item:hover .logo-badge{transform:scale(1.08);box-shadow:inset 0 1px 0 rgba(255,255,255,0.25), 0 14px 28px rgba(0,0,0,0.22), 0 0 18px rgba(96,165,250,0.25)}
+        .fallback-letter{font-weight:900;color:#fff;font-size:1.1rem;letter-spacing:-0.07em}
+
         /* Testimonials */
         .testimonials{margin-top:26px;display:grid;grid-template-columns:1fr;gap:12px}
         .testimonial{background:var(--glass);padding:14px;border-radius:12px}
@@ -81,6 +109,8 @@
         .fade-in{animation:fadeIn .6s ease both}
         @keyframes fadeIn{from{opacity:0;transform:translateY(6px)}to{opacity:1;transform:none}}
         @keyframes logoFloat{from{transform:translateY(0) scale(1)}to{transform:translateY(-6px) scale(1.02)}}
+        @keyframes marquee{from{transform:translateX(0)}to{transform:translateX(-50%)}}
+        @keyframes floatCard{0%,100%{transform:translateY(0)}50%{transform:translateY(-6px)}}
     </style>
 </head>
 <body>
@@ -122,6 +152,47 @@
                         <li>Compatível com Smart TVs, celulares e PCs</li>
                     </ul>
                 </aside>
+            </section>
+
+            <section class="streaming-section fade-in" aria-label="Carrossel de plataformas de streaming">
+                <div class="section-kicker">TV + Streaming</div>
+                <div class="section-heading">
+                    <h2>Conteúdos em uma única experiência</h2>
+                    <p>Filmes, séries, esportes e canais ao vivo em um só lugar.</p>
+                </div>
+
+                <div class="streaming-carousel">
+                    <div class="stream-track">
+                        <div class="stream-group">
+                            <div class="stream-item netflix"><div class="logo-badge"><img src="https://cdn.simpleicons.org/netflix/ffffff" alt="Netflix"></div><div><strong>Netflix</strong><small>Filmes &amp; séries</small></div></div>
+                            <div class="stream-item prime"><div class="logo-badge"><img src="https://img.icons8.com/fluency/48/amazon-prime-video.png" alt="Prime Video"></div><div><strong>Prime Video</strong><small>Originals</small></div></div>
+                            <div class="stream-item disney"><div class="logo-badge"><img src="https://img.icons8.com/?size=48&id=gFK6SbEHpgzU&format=png" alt="Disney+"></div><div><strong>Disney+</strong><small>Família &amp; ação</small></div></div>
+                            <div class="stream-item paramount"><div class="logo-badge"><img src="https://cdn.simpleicons.org/paramountplus/ffffff" alt="Paramount+"></div><div><strong>Paramount+</strong><small>Live &amp; catálogo</small></div></div>
+                            <div class="stream-item looke"><div class="logo-badge"><span class="fallback-letter">L</span></div><div><strong>Looke</strong><small>Entretenimento</small></div></div>
+                            <div class="stream-item hbo"><div class="logo-badge"><img src="https://cdn.simpleicons.org/hbomax" alt="HBO Max"></div><div><strong>HBO Max</strong><small>Premium</small></div></div>
+                            <div class="stream-item pluto"><div class="logo-badge"><img src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABwAAAAcCAMAAABF0y+mAAAATlBMVEVHcEwAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA0MQCxqACTiwCdlQD//AD/+ADq3gD05wD/8gD/9QBbVgDFuwCKgwDazwBybAAUEwB9DpPlAAAACnRSTlMAOozJ9f9sG+ZICzXOLQAAAOtJREFUeAF9kwUCgzAMRal8nEqC3v+iKynzrQ8nnqbVA6WNBazRqvqktnhg6zdR0+KNtnnKOnzRFWQPaYOfZM8Srx9GvNNKnkhMzk344MxZahi8/7SETbWfohCJYkjErMLkZ0BVGsDimYiFiMTqOQDQlXm1JHIzgMB+BWAkZI4pD16A3hHnoHgK5beXjwEn70Jsp0Mi12ehfRPujrc5XVct5k2ISLyx2wFJSF/CS3vyxEQQdKXkOTtiT0l+OCI/QVDVFXRxzH7LDXFHDimNF9YthAXAHOUhjU+0+ElbXuzymJQHrDyaxaEubIcbbFUT+AKBZtoAAAAASUVORK5CYII=" alt="Pluto TV"></div><div><strong>Pluto TV</strong><small>Ao vivo</small></div></div>
+                            <div class="stream-item premiere"><div class="logo-badge"><span class="fallback-letter">P</span></div><div><strong>Premiere</strong><small>Champions</small></div></div>
+                            <div class="stream-item sporttv"><div class="logo-badge"><span class="fallback-letter">S</span></div><div><strong>Sport TV</strong><small>Esportes</small></div></div>
+                            <div class="stream-item espn"><div class="logo-badge"><img src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABwAAAAcCAMAAABF0y+mAAAAWlBMVEXsHCTsGyPsDxrsFR7uQUf82tz70tTtKjHxYWb////96OnsBBTzf4P71NXrAA/2pKf5wML3r7L3q67ydHfrAADwUVbtLzb/9/fvSE384uP6y830gobyeHzwWFzD1SbZAAAAj0lEQVR4AcXSNQKEQAAEQdx93f7/zHOZiQjptGA9u7KcYssLrCQtqxprWtSi67EhQxwnwnlEXFbCbcmgYtqPf7soEHNJjWTZNjdz82pu5lqVuBNtaE5LaMmMfiFv033yvM3w2vq4jK+Kl/E2nYjvUkm40ZzrgjsZZ8JppG0OhF2B2DY1VtGceVlg+fkjuaY7LXoMIxMy1FEAAAAASUVORK5CYII=" alt="ESPN"></div><div><strong>ESPN</strong><small>Ao vivo</small></div></div>
+                            <div class="stream-item globoplay"><div class="logo-badge"><img src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABwAAAAcCAMAAABF0y+mAAAAQlBMVEVHcEz1AjT1AjT1AjT1AjT1ACr3WGz2LEr3QVr////6l6L92N30AAT1ABz5hZL7qrT4aXr8zNL/8fT8vsX4doX+5eibCMEhAAAABHRSTlMAHrv7iHW0BwAAAQBJREFUeAF90wUChDAMBEAkKWzTpP7/p567dHEGqU7TvKz0I+syn4z+Zp6W/7hM639cJxrkgTxCd9Ft/0I+BZe9l8CX6weq97aDtujVizfVFJPeUHOpaCDULoYK3xBhfENQKA3Wg8JLcCX7YKI3LNGhYYfzMGxVYt97vSFvvSAVtdJ3E/SNKyrTDbt5kBKrsrOgRKpKd0y17nyyU3w/71mZlC94eYXYSe+bl5BL9pKCJH5pvoQUi0mUvcTTDkyvWALBsliolZCrviFqzyYNETVkuI83Y1RnoUVLoUHpFVsJTHxemYDEr0hb4seDzjE98LO7H102yHiADYfmcFCPpsMRxIYUoAk3s9gAAAAASUVORK5CYII=" alt="Globoplay"></div><div><strong>Globoplay</strong><small>Novelas</small></div></div>
+                            <div class="stream-item star"><div class="logo-badge"><img src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABwAAAAcCAMAAABF0y+mAAAAflBMVEXlHADlDgDjAADlEgDpbWfvn5vqfHfkNCjnX1joYlvmTEPnW1PnVEzpaGLnRjv76un////34+LfAADxxMLiLB3qeHDywL7stLL78vH119XcAAD34N/56+rYAADZKRvqpqP99/ffOS7rpKHlhYHsg37YLyPwuLbjjYrdPTTfWFEMJlzZAAAAs0lEQVR4AeXQhYHDMBAAwfMpjGu2BWHsv8CHGHvIiBnkq0SqkRhjpMmavKWT6XSm88VSdLVYq+hmsZWdNPb8iyFZAgudQJrlzboCypQqprYAzkJspZFU+KUNBzjuORXgIXRnagpQnOEEGwuwiaRjjxXg+M8SvcBVpaM3G+4ApxJm+uBkh7EjVVFDhQtwso56WNgcyROK5AgXKFV6yet5fL6S9/ts5P1vLiNGVY00//ZPvs0vBcAO/9FyerIAAAAASUVORK5CYII=" alt="Star+"></div><div><strong>Star+</strong><small>Streaming</small></div></div>
+                        </div>
+                        <div class="stream-group" aria-hidden="true">
+                            <div class="stream-item netflix"><div class="logo-badge"><img src="https://cdn.simpleicons.org/netflix" alt="Netflix"></div><div><strong>Netflix</strong><small>Filmes &amp; séries</small></div></div>
+                            <div class="stream-item prime"><div class="logo-badge"><img src="https://img.icons8.com/fluency/48/amazon-prime-video.png" alt="Prime Video"></div><div><strong>Prime Video</strong><small>Originals</small></div></div>
+                            <div class="stream-item disney"><div class="logo-badge"><img src="https://img.icons8.com/?size=48&id=gFK6SbEHpgzU&format=png" alt="Disney+"></div><div><strong>Disney+</strong><small>Família &amp; ação</small></div></div>
+                            <div class="stream-item paramount"><div class="logo-badge"><img src="https://cdn.simpleicons.org/paramountplus" alt="Paramount+"></div><div><strong>Paramount+</strong><small>Live &amp; catálogo</small></div></div>
+                            <div class="stream-item looke"><div class="logo-badge"><span class="fallback-letter">L</span></div><div><strong>Looke</strong><small>Entretenimento</small></div></div>
+                            <div class="stream-item hbo"><div class="logo-badge"><img src="https://cdn.simpleicons.org/hbomax" alt="HBO Max"></div><div><strong>HBO Max</strong><small>Premium</small></div></div>
+                            <div class="stream-item pluto"><div class="logo-badge"><img src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABwAAAAcCAMAAABF0y+mAAAATlBMVEVHcEwAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA0MQCxqACTiwCdlQD//AD/+ADq3gD05wD/8gD/9QBbVgDFuwCKgwDazwBybAAUEwB9DpPlAAAACnRSTlMAOozJ9f9sG+ZICzXOLQAAAOtJREFUeAF9kwUCgzAMRal8nEqC3v+iKynzrQ8nnqbVA6WNBazRqvqktnhg6zdR0+KNtnnKOnzRFWQPaYOfZM8Srx9GvNNKnkhMzk344MxZahi8/7SETbWfohCJYkjErMLkZ0BVGsDimYiFiMTqOQDQlXm1JHIzgMB+BWAkZI4pD16A3hHnoHgK5beXjwEn70Jsp0Mi12ehfRPujrc5XVct5k2ISLyx2wFJSF/CS3vyxEQQdKXkOTtiT0l+OCI/QVDVFXRxzH7LDXFHDimNF9YthAXAHOUhjU+0+ElbXuzymJQHrDyaxaEubIcbbFUT+AKBZtoAAAAASUVORK5CYII=" alt="Pluto TV"></div><div><strong>Pluto TV</strong><small>Ao vivo</small></div></div>
+                            <div class="stream-item premiere"><div class="logo-badge"><img src="data:image/jpeg;base64,/9j/4AAQSkZJRgABAQAAAQABAAD/2wCEAAkGBwgHBgkIBwgKCgkLDRYPDQwMDRsUFRAWIB0iIiAdHx8kKDQsJCYxJx8fLT0tMTU3Ojo6Iys/RD84QzQ5OjcBCgoKDQwNGg8PGjclHyU3Nzc3Nzc3Nzc3Nzc3Nzc3Nzc3Nzc3Nzc3Nzc3Nzc3Nzc3Nzc3Nzc3Nzc3Nzc3Nzc3N//AABEIACAAIAMBEQACEQEDEQH/xAAXAAEBAQEAAAAAAAAAAAAAAAAABgUB/8QAIhAAAQUAAQMFAAAAAAAAAAAAAgABAwQFERIhQQYUQlGx/8QAGQEBAQEAAwAAAAAAAAAAAAAAAAQDAQUG/8QAHBEAAgIDAQEAAAAAAAAAAAAAAAECAxESQQQh/9oADAMBAAIRAxEAPwDLXVnnQgCAIDiAt5MvAyqGf7/J0L9izXGY5ICLpZ38cMTKjSEUsrJc6qq4x2i22uHAzMDVo6DUcnRoT1qxTjLORdLuPjuTprCSeE0cKuqcZaxaaXSJU5EEBZ6vrOzDWzYMK84BFVAJ2eBuxs3HyH87KiVzSWrLbPU0oqt8Me96r3b9WSravkUMjdJiMYD1N9cs3PCzds2sNmMvRbJYb+GKszAIAgCAID//2Q==" alt="Premiere"></div><div><strong>Premiere</strong><small>Champions</small></div></div>
+                            <div class="stream-item sporttv"><div class="logo-badge"><span class="fallback-letter">S</span></div><div><strong>Sport TV</strong><small>Esportes</small></div></div>
+                            <div class="stream-item espn"><div class="logo-badge"><img src="https://cdn.simpleicons.org/espn" alt="ESPN"></div><div><strong>ESPN</strong><small>Ao vivo</small></div></div>
+                            <div class="stream-item globoplay"><div class="logo-badge"><img src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABwAAAAcCAMAAABF0y+mAAAAQlBMVEVHcEz1AjT1AjT1AjT1AjT1ACr3WGz2LEr3QVr////6l6L92N30AAT1ABz5hZL7qrT4aXr8zNL/8fT8vsX4doX+5eibCMEhAAAABHRSTlMAHrv7iHW0BwAAAQBJREFUeAF90wUChDAMBEAkKWzTpP7/p567dHEGqU7TvKz0I+syn4z+Zp6W/7hM639cJxrkgTxCd9Ft/0I+BZe9l8CX6weq97aDtujVizfVFJPeUHOpaCDULoYK3xBhfENQKA3Wg8JLcCX7YKI3LNGhYYfzMGxVYt97vSFvvSAVtdJ3E/SNKyrTDbt5kBKrsrOgRKpKd0y17nyyU3w/71mZlC94eYXYSe+bl5BL9pKCJH5pvoQUi0mUvcTTDkyvWALBsliolZCrviFqzyYNETVkuI83Y1RnoUVLoUHpFVsJTHxemYDEr0hb4seDzjE98LO7H102yHiADYfmcFCPpsMRxIYUoAk3s9gAAAAASUVORK5CYII=" alt="Globoplay"></div><div><strong>Globoplay</strong><small>Novelas</small></div></div>
+                            <div class="stream-item star"><div class="logo-badge"><img src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABwAAAAcCAMAAABF0y+mAAAAflBMVEXlHADlDgDjAADlEgDpbWfvn5vqfHfkNCjnX1joYlvmTEPnW1PnVEzpaGLnRjv76un////34+LfAADxxMLiLB3qeHDywL7stLL78vH119XcAAD34N/56+rYAADZKRvqpqP99/ffOS7rpKHlhYHsg37YLyPwuLbjjYrdPTTfWFEMJlzZAAAAs0lEQVR4AeXQhYHDMBAAwfMpjGu2BWHsv8CHGHvIiBnkq0SqkRhjpMmavKWT6XSm88VSdLVYq+hmsZWdNPb8iyFZAgudQJrlzboCypQqprYAzkJspZFU+KUNBzjuORXgIXRnagpQnOEEGwuwiaRjjxXg+M8SvcBVpaM3G+4ApxJm+uBkh7EjVVFDhQtwso56WNgcyROK5AgXKFV6yet5fL6S9/ts5P1vLiNGVY00//ZPvs0vBcAO/9FyerIAAAAASUVORK5CYII=" alt="Star+"></div><div><strong>Star+</strong><small>Streaming</small></div></div>
+                        </div>
+                    </div>
+                </div>
             </section>
 
             <section id="plans" style="margin-top:18px">
@@ -209,20 +280,6 @@
                 </div>
             </div>
 
-            <div id="masterModal" class="modal-overlay hidden" onclick="if(event.target===this) closeMasterModal()">
-                <div class="modal">
-                    <button class="close-btn" type="button" onclick="closeMasterModal()">×</button>
-                    <h2>Área Master</h2>
-                    <p>Informe a senha para visualizar os clientes registrados.</p>
-                    <form id="masterForm" onsubmit="requestMasterData(event)">
-                        <input type="password" name="password" placeholder="Senha Master" required>
-                        <button class="btn btn-primary" type="submit">Entrar</button>
-                    </form>
-                    <div id="masterResult" class="master-result"></div>
-                    <button class="btn btn-ghost" id="downloadJsonBtn" type="button" onclick="downloadClientsJson()" style="display:none;margin-top:12px">Baixar JSON</button>
-                </div>
-            </div>
-
             <iframe name="googleFormTarget" style="display:none"></iframe>
             <form id="googleForm" action="https://docs.google.com/forms/d/e/1FAIpQLSeGKGTj2Z02yf7lkwoK2xFuWWrSDSZOd8cOMyr2oDMu8FbUdQ/formResponse" method="POST" target="googleFormTarget" style="display:none"></form>
 
@@ -233,8 +290,7 @@
                             <img src="assets/AtomC.U.png" alt="Atom C.U" style="width:48px;height:48px;border-radius:8px">
                             <div style="font-weight:700">Contato</div>
                         </div>
-                        <div style="color:var(--silver)">WhatsApp: <a href="#" onclick="openWhatsApp()" style="color:var(--orange);text-decoration:none">(11) 90000-0000</a></div>
-                        <div style="color:var(--silver)">E-mail: <a href="mailto:contato@atomcu.com" style="color:var(--orange);text-decoration:none">contato@atomcu.com</a></div>
+                        <div style="color:var(--silver)">E-mail: <a href="mailto:smashbrj@gmail.com" style="color:var(--orange);text-decoration:none">smashbrj@gmail.com</a></div>
                     </div>
                     <div style="text-align:right;color:var(--silver)">
                         <div>Redes sociais</div>
@@ -245,19 +301,24 @@
                         </div>
                     </div>
                 </div>
-                <div style="margin-top:14px;color:var(--silver);font-size:13px">© <span id="year"></span> Atom C.U — <a href="#" style="color:var(--silver)">Termos e Condições</a> · <button class="btn btn-ghost" style="padding:8px 12px;font-size:0.93rem" onclick="openMasterArea()">Área Master</button></div>
+                <div style="margin-top:14px;color:var(--silver);font-size:13px">© <span id="year"></span> Atom C.U — <a href="#" style="color:var(--silver)">Termos e Condições</a> · <a class="btn btn-ghost" href="master.html" style="padding:8px 12px;font-size:0.93rem;text-decoration:none;display:inline-flex">Área Master</a></div>
             </footer>
         </main>
     </div>
 
     <script>
         document.getElementById('year').textContent = new Date().getFullYear();
+        var spreadsheetUrl = 'https://docs.google.com/spreadsheets/d/1Y-csC7UVj-7QdnABfICvB5Jdx198c0-Gm9e58QU7748/edit?usp=sharing';
         if(!localStorage.getItem('atomcu_clients')){
             localStorage.setItem('atomcu_clients', '[]');
         }
 
         function scrollToPlans(){
             document.getElementById('plans').scrollIntoView({behavior:'smooth'});
+        }
+
+        function openMasterArea(){
+            window.location.href = 'master.html';
         }
 
         function openWhatsApp(){
@@ -285,6 +346,7 @@
             var form = event.target;
             var formData = new FormData(form);
             var record = {
+                created_at: new Date().toISOString(),
                 nome: formData.get('nome').trim(),
                 email: formData.get('email').trim(),
                 telefone: formData.get('telefone').trim(),
@@ -332,40 +394,6 @@
             }
 
             googleForm.submit();
-        }
-
-        function openMasterArea(){
-            document.getElementById('masterResult').innerHTML = '';
-            document.getElementById('masterForm').reset();
-            document.getElementById('masterModal').classList.remove('hidden');
-        }
-
-        function closeMasterModal(){
-            document.getElementById('masterModal').classList.add('hidden');
-            document.getElementById('masterResult').innerHTML = '';
-        }
-
-        function requestMasterData(event){
-            event.preventDefault();
-            var password = new FormData(event.target).get('password');
-            var resultEl = document.getElementById('masterResult');
-            var downloadBtn = document.getElementById('downloadJsonBtn');
-            if(password !== 'Batatadoce'){
-                resultEl.textContent = 'Senha inválida. Tente novamente.';
-                downloadBtn.style.display = 'none';
-                return;
-            }
-            var clients = JSON.parse(localStorage.getItem('atomcu_clients') || '[]');
-            if(!clients.length){
-                resultEl.textContent = 'Nenhum cliente registrado ainda.';
-                downloadBtn.style.display = 'none';
-                return;
-            }
-            resultEl.innerHTML = '<table><thead><tr><th>Nome</th><th>Email</th><th>Telefone</th><th>Plano</th></tr></thead><tbody>' +
-                clients.map(function(item){
-                    return '<tr><td>' + escapeHtml(item.nome) + '</td><td>' + escapeHtml(item.email) + '</td><td>' + escapeHtml(item.telefone) + '</td><td>' + escapeHtml(item.plano) + '</td></tr>';
-                }).join('') + '</tbody></table>';
-            downloadBtn.style.display = 'inline-flex';
         }
 
         function downloadClientsJson(){
